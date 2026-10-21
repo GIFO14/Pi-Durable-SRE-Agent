@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pi · Incident workspace</title>
+<link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css"><script type="module" src="/app.js"></script>
+</head>
+<body>
+<aside class="sidebar" aria-label="Workspace navigation">
+<a class="workspace-brand" href="/"><span class="workspace-logo"><i class="icon" data-icon="layers"></i></span><span>Pi workspace<small>Durable SRE</small></span></a>
+<div class="sidebar-content">
+<span class="nav-label">Workspace</span>
+<nav class="nav-list">
+<button class="nav-item selected" data-view="workflow"><i class="icon" data-icon="layers"></i>Incidents<span class="nav-count" id="incident-count">0</span></button>
+<button class="nav-item" data-view="activity"><i class="icon" data-icon="activity"></i>Activity</button>
+<button class="nav-item" data-view="evidence"><i class="icon" data-icon="file-code-2"></i>Evidence</button>
+</nav>
+<div class="nav-label project-label">Projects</div>
+<div class="project-name"><span class="project-icon"><i class="icon" data-icon="server"></i></span>Checkout API</div>
+<nav class="nav-list project-links">
+<button class="nav-item selected" data-view="workflow"><i class="icon" data-icon="columns-3"></i>Incident workflow</button>
+<button class="nav-item" data-focus="production"><i class="icon" data-icon="rocket"></i>Deployments</button>
+</nav>
+<div class="sidebar-note"><i class="icon" data-icon="shield-check"></i><div><strong>Built to keep going</strong><p>Progress and approvals are saved, even across restarts.</p></div></div>
+</div>
+<div class="sidebar-bottom"><span class="local-avatar"><i class="icon" data-icon="terminal"></i></span><div class="workspace-caption">Local workspace<small>ChatGPT session</small></div><button id="demo-controls-toggle" class="icon-button demo-controls-toggle" aria-label="Demo controls" aria-expanded="false" aria-controls="demo-controls-menu" title="Demo controls"><i class="icon" data-icon="ellipsis"></i></button><button id="theme-toggle" class="icon-button" aria-label="Switch to dark theme" title="Switch theme"><i class="icon" data-icon="moon"></i></button><div id="demo-controls-menu" class="demo-controls-menu" hidden><button id="reset-simulation" type="button"><i class="icon" data-icon="rotate-ccw"></i>Reset simulation</button></div></div>
+</aside>
+<div class="app-shell">
+<header class="topbar"><div class="breadcrumbs"><button id="sidebar-toggle" class="icon-button" aria-label="Toggle sidebar"><i class="icon" data-icon="panel-left"></i></button><span>Checkout API</span><i class="icon separator" data-icon="chevron-right"></i><span class="breadcrumb-current">Incidents</span></div><span id="connection" class="connection" role="status">Connecting…</span></header>
+<main>
+<div class="page-heading"><div><div class="heading-line"><h1>Incident workspace</h1><span class="pill">Local demo</span></div><p>From the first alert to a healthy production.</p></div><button id="inject" class="button primary" disabled><i class="icon" data-icon="plus"></i><span id="inject-label">Inject incident</span></button></div>
+<div id="notice" class="notice" role="status" hidden></div>
+<section class="incident-banner" aria-label="Incident overview"><span class="incident-icon"><i class="icon" data-icon="activity"></i></span><div class="incident-description"><div class="incident-title"><strong id="incident-id">No active incident</strong><span id="severity" class="badge" hidden></span></div><div id="service" class="muted">Inject a demo incident to start the workflow.</div></div><div class="incident-state"><span class="status-dot"></span><strong id="current-state">Ready to start</strong></div><span id="time-info" class="muted small">Waiting for an alert</span></section>
+<div class="view-toolbar"><div class="view-tabs" role="tablist" aria-label="Incident views">
+<button class="view-tab active" id="tab-workflow" role="tab" aria-controls="view-workflow" aria-selected="true" data-view="workflow"><i class="icon" data-icon="columns-3"></i>Workflow</button>
+<button class="view-tab" id="tab-evidence" role="tab" aria-controls="view-evidence" aria-selected="false" data-view="evidence"><i class="icon" data-icon="file-code-2"></i>Evidence<span class="tab-count" id="evidence-total">0</span></button>
+<button class="view-tab" id="tab-activity" role="tab" aria-controls="view-activity" aria-selected="false" data-view="activity"><i class="icon" data-icon="activity"></i>Activity</button>
+<button class="view-tab" id="tab-production" role="tab" aria-controls="view-production" aria-selected="false" data-view="production"><i class="icon" data-icon="rocket"></i>Production</button>
+</div><span class="toolbar-caption"><i class="icon" data-icon="workflow"></i><span id="cycle">14 workflow steps</span></span></div>
+<div class="workspace">
+<div class="workspace-main">
+<section class="view-pane journey-pane" id="view-workflow" role="tabpanel" aria-labelledby="tab-workflow">
+<div class="journey-heading"><div><span class="label">INCIDENT JOURNEY</span><h2 id="journey-title">One incident, every step.</h2></div><button id="follow-current" class="button secondary" type="button"><i class="icon" data-icon="activity"></i><span>Following current step</span></button></div>
+<nav id="stage-overview" class="stage-overview" aria-label="Incident stages"></nav>
+<div class="timeline-heading"><span>Execution timeline</span><span id="workflow-progress">Waiting to begin</span></div>
+<div id="workflow" class="step-timeline" aria-label="Workflow steps"></div>
+<div class="journey-note"><i class="icon" data-icon="circle-help"></i>Select any step to inspect its findings, events and evidence.</div>
+</section>
+<section class="view-pane evidence-pane" id="view-evidence" role="tabpanel" aria-labelledby="tab-evidence" hidden>
+<div class="section-heading"><h2>Investigation &amp; evidence</h2><span id="agent-mode" class="pill blue">Real agent</span></div>
+<div class="error-block"><span class="label">Reported error</span><code id="error">No error reported yet.</code></div>
+<div class="finding"><h3>Current hypothesis</h3><p id="hypothesis" class="placeholder">Investigation has not started.</p></div>
+<div class="finding"><h3>Root cause</h3><p id="root-cause" class="placeholder">Waiting for repository evidence.</p></div>
+<div class="evidence-grid"><div><h3>Relevant files</h3><ul id="relevant-files" class="file-list"><li>—</li></ul></div><div><h3>Changed files</h3><ul id="changed-files" class="file-list"><li>—</li></ul></div></div>
+<div class="finding"><h3>Fix summary</h3><p id="fix-summary">No fix proposed yet.</p></div>
+<details class="execution"><summary><span>Execution evidence</span><span id="evidence-count">0 commands</span><i class="icon" data-icon="chevron-down"></i></summary><div id="executions"></div></details>
+</section>
+<section class="view-pane activity-pane" id="view-activity" role="tabpanel" aria-labelledby="tab-activity" hidden><div class="section-heading"><h2>Activity</h2><span class="pill">Live events</span></div><ol id="events" class="events"><li class="empty-activity"><i class="icon" data-icon="activity"></i><strong>A quiet start.</strong><span>Incident activity will appear here as the agent works.</span></li></ol></section>
+<section class="view-pane production-view" id="view-production" role="tabpanel" aria-labelledby="tab-production" hidden>
+<div class="properties-heading"><h2>Live incident overview</h2><span class="pill blue" id="session-status">ChatGPT</span></div>
+<section class="verification"><div class="section-heading"><h3>Local verification</h3><span id="attempts" class="muted small">0 / 3 attempts</span></div><div class="verification-rows"><div><span><i class="icon" data-icon="flask-conical"></i>Before fix</span><strong id="test-red" class="result">PENDING</strong></div><div><span><i class="icon" data-icon="check-check"></i>After fix</span><strong id="test-green" class="result">PENDING</strong></div><div><span><i class="icon" data-icon="box"></i>Component tests</span><strong id="test-component" class="result">PENDING</strong></div></div><code id="regression" class="test-path">No regression test yet</code></section>
+<section class="production-panel" id="production" tabindex="-1"><div class="section-heading"><h3>Production</h3><span class="pill">Simulated</span></div><div class="version-rows"><div><span>Current version</span><strong id="production-version">—</strong></div><div><span>Candidate</span><strong id="candidate-version">—</strong></div><div><span>Rollback point</span><strong id="rollback-version">—</strong></div></div><div class="traffic-heading"><span>Traffic distribution</span><span id="traffic-total" class="muted small">No rollout</span></div><div id="traffic-bar" class="traffic-bar" role="img" aria-label="No traffic data"></div><div id="traffic-legend" class="traffic-legend">Waiting for an incident</div><div class="metrics"><div><span>Error rate</span><strong id="error-rate">—</strong></div><div><span>p95 latency</span><strong id="latency">—</strong></div></div><div class="health-row"><span>Health</span><span id="health" class="health">Unknown</span></div><div class="stage-row"><span>Stage</span><span id="stage">Not started</span></div></section>
+<section class="approval-card"><div class="approval-heading"><i class="icon" data-icon="shield-check"></i><span>Human approval</span></div><h3 id="approval-title">You control the rollout.</h3><p id="approval-copy">The agent handles the fix. You approve the canary and the final promotion.</p><button id="deploy" class="button primary" hidden><i class="icon" data-icon="rocket"></i>Deploy Canary<span>10%</span></button><button id="promote" class="button primary" hidden><i class="icon" data-icon="arrow-up"></i>Promote to 100%</button><div id="approval-status" role="status">No approval requested</div><a id="report" class="report-link" href="/api/report" hidden>Download incident report<i class="icon" data-icon="arrow-up-right"></i></a></section>
+<div id="failure" class="failure" role="alert" hidden></div>
+</section>
+</div>
+<aside class="step-inspector" aria-label="Selected step details">
+<div class="inspector-top"><span>Step details</span><span id="inspector-mode" class="pill blue">Following live</span></div>
+<h2 id="step-title">Detected</h2><div id="step-status" class="inspector-status">Not started</div>
+<p id="step-description" class="step-description"></p>
+<div id="step-run-field" class="step-run-field" hidden><label for="step-run">Visit</label><select id="step-run"></select></div>
+<div id="step-detail-content"></div>
+<button id="approve-selected" class="button primary" hidden>Approve</button>
+<div id="selected-approval-result" class="selected-approval-result" role="status"></div>
+</aside>
+</div>
+<footer><span><i class="icon" data-icon="shield-check"></i>Pi Durable<span class="footer-separator">/</span>Continuous incident ownership</span><span id="task-id">No task running</span></footer>
+</main>
+</div>
+<dialog id="reset-dialog" class="reset-dialog" aria-labelledby="reset-dialog-title" aria-describedby="reset-dialog-copy">
+<span class="reset-dialog-icon"><i class="icon" data-icon="rotate-ccw"></i></span>
+<h2 id="reset-dialog-title">Start the simulation again?</h2>
+<p id="reset-dialog-copy">This clears the incident, its history and the simulated deployment, and restores the original checkout bug. Your ChatGPT sign-in is kept.</p>
+<p id="reset-error" class="reset-error" role="alert" hidden></p>
+<div class="reset-dialog-actions"><button id="reset-cancel" class="button secondary" type="button" autofocus>Cancel</button><button id="reset-confirm" class="button primary" type="button">Reset simulation</button></div>
+</dialog>
+</body>
+</html>

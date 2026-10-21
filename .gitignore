@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.*
+!.env.example
+.auth/
+.logs/
+.design/
+.demo/
+demo-repo/tests/incident.test.ts
+demo-repo/.sre-evidence/
+# Local implementation and visual-QA notes; not part of the runnable demo.
+design-qa.md
+pi-durable-sre-implementation-plan.md

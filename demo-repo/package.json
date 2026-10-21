@@ -1,0 +1,10 @@
+{
+  "name": "checkout-api-demo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test --test-isolation=none tests/*.test.ts",
+    "test:regression": "node --test --test-isolation=none tests/incident.test.ts",
+    "test:component": "node --test --test-isolation=none tests/checkout.test.ts"
+  }
+}

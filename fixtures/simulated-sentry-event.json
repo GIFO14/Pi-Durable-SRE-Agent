@@ -1,0 +1,9 @@
+{
+  "id": "INC-001",
+  "service": "checkout-api",
+  "severity": "high",
+  "error": "TypeError: Cannot read properties of undefined (reading 'id')",
+  "route": "/api/checkout",
+  "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at checkout (src/checkout.ts:3:31)",
+  "usersAffected": 184
+}
